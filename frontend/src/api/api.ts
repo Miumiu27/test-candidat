@@ -1,41 +1,49 @@
 import axios, { AxiosInstance } from 'axios';
 
+
+const API_URL = import.meta.env.VITE_API_URL ;
+
+
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Intercepteur pour ajouter le token à chaque requête
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Intercepteur pour gérer les erreurs 401 (refresh token)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true;
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
-          const response = await axios.post('http://localhost:3000/api/auth/refresh', {
-            refreshToken,
-          });
+          // Utiliser l'instance api pour la requête de refresh
+          const response = await api.post('/api/auth/refresh', { refreshToken });
           const newAccessToken = response.data.accessToken;
           localStorage.setItem('accessToken', newAccessToken);
-          error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-          return api(error.config);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return api(originalRequest);
         } catch (refreshError) {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          window.location.href = '/'; // Rediriger vers la page de connexion
+          window.location.reload();
+          return Promise.reject(refreshError);
         }
       }
     }
