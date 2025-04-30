@@ -38,4 +38,18 @@ export class TaskController {
       res.status(500).json({ error: 'Erreur serveur' });
     }
   }
+  static async updateTask(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, description, isDone } = req.body;
+      const updatedTask = await TaskModel.update(id, { title, description, isDone });
+      if (!updatedTask) {
+        res.status(404).json({ error: 'Tâche non trouvée' });
+        return;
+      }
+      res.json(updatedTask);
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  }
 }

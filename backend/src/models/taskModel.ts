@@ -30,5 +30,13 @@ interface Task {
       tasks.splice(index, 1);
       return true;
     }
+
+    static async update(id: number, taskData: Partial<Task>): Promise<Task | null> {
+      const task = tasks.find((t) => t.id === id);
+      if (!task) return null;
+      Object.assign(task, taskData);
+      return task;
+    }
+  
   }
   
