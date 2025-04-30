@@ -25,4 +25,17 @@ export class TaskController {
       res.status(500).json({ error: 'Erreur serveur' });
     }
   }
+  static async deleteTask(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await TaskModel.delete(id);
+      if (!deleted) {
+        res.status(404).json({ error: 'Tâche non trouvée' });
+        return;
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  }
 }
