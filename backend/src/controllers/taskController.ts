@@ -17,4 +17,12 @@ export class TaskController {
       res.status(500).json({ error: 'Erreur serveur' });
     }
   }
+  static async getAllTasks(req: Request, res: Response): Promise<void> {
+    try {
+      const tasks = await TaskModel.findAll();
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  }
 }

@@ -17,8 +17,11 @@ interface Task {
         isDone: taskData.isDone ?? false,
       };
       tasks.push(newTask);
-      console.log('Nouvelle tâche créée:', newTask);
       return newTask;
+    }
+
+    static async findAll(): Promise<Task[]> {
+      return tasks;
     }
   }
   
