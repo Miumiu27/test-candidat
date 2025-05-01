@@ -4,7 +4,6 @@ import { TaskModel } from '../models/taskModel';
 export class TaskController {
   static async createTask(req: Request, res: Response): Promise<void> {
     try {
-      console.log('Contrôleur createTask atteint');
       const { title, description, isDone } = req.body;
       if (!title) {
         res.status(400).json({ error: 'Le titre est requis' });
