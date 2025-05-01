@@ -1,14 +1,46 @@
-import './App.css'
+import { useState } from "react";
+import { Button } from "./components/ui/button";
 
-function App() {
+import LoginForm from "./components/LoginForm";
+import api from "./api/api";
+
+const App: React.FC = () => {
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("accessToken")
+  );
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await api.post("/api/auth/login", { email, password });
+      setToken(response.data.accessToken);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+    } catch (error) {
+      console.error("Erreur de connexion", error);
+      alert("Identifiants invalides");
+    }
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  };
+
+  if (!token) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
 
   return (
-    <>
-       <h1 className="text-3xl font-bold underline text-red-500">
-    Hello world!
-  </h1>
-    </>
-  )
-}
+    <div className="max-w-3xl mx-auto p-4 sm:p-6">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold sm:text-3xl">Todo App</h1>
+        <Button variant="destructive" onClick={handleLogout}>
+          Déconnexion
+        </Button>
+      </header>
+    </div>
+  );
+};
 
-export default App
+export default App;
