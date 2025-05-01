@@ -1,58 +1,24 @@
-// src/components/TaskList.tsx
-import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Toggle } from './ui/toggle';
 import { Trash2, Edit2 } from 'lucide-react';
-import api from '../api/api';
 import { Task } from '../types';
-
+import { useTasks } from '../hooks/UseTasks';
 interface TaskListProps {
   refresh: boolean;
   onEditTask: (task: Task) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({ refresh, onEditTask }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [filter, setFilter] = useState<'all' | 'done' | 'todo'>('all');
+  const { filteredTasks, loading, error, filter, setFilter, toggleTaskStatus, deleteTask } = useTasks(refresh);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await api.get('/api/tasks');
-        setTasks(response.data);
-      } catch (error) {
-        console.error('Erreur lors du chargement des tâches', error);
-      }
-    };
-    fetchTasks();
-  }, [refresh]);
+  if (loading) {
+    return <p className="text-center text-gray-500">Chargement...</p>;
+  }
 
-  const toggleTaskStatus = async (task: Task) => {
-    try {
-      await api.put(`/api/tasks/${task.id}`, { ...task, isDone: !task.isDone });
-      setTasks(
-        tasks.map((t) => (t.id === task.id ? { ...t, isDone: !t.isDone } : t))
-      );
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour de la tâche', error);
-    }
-  };
-
-  const deleteTask = async (id: number) => {
-    try {
-      await api.delete(`/api/tasks/${id}`);
-      setTasks(tasks.filter((t) => t.id !== id));
-    } catch (error) {
-      console.error('Erreur lors de la suppression de la tâche', error);
-    }
-  };
-
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === 'done') return task.isDone;
-    if (filter === 'todo') return !task.isDone;
-    return true;
-  });
+  if (error) {
+    return <p className="text-center text-red-500">{error}</p>;
+  }
 
   return (
     <div className="space-y-4">
@@ -109,7 +75,7 @@ const TaskList: React.FC<TaskListProps> = ({ refresh, onEditTask }) => {
                   aria-label={
                     task.isDone ? 'Marquer comme non fait' : 'Marquer comme fait'
                   }
-                  data-testid={`toggle-task-${task.id}`} // Ajout du data-testid
+                  data-testid={`toggle-task-${task.id}`}
                 >
                   {task.isDone ? 'Fait' : 'À faire'}
                 </Toggle>
