@@ -16,7 +16,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
-app.use('/api/tasks', authMiddleware, taskRoutes);
+app.use('/api/tasks',  taskRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Bienvenue sur l'API Todo App !");
