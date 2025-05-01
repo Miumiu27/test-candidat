@@ -56,7 +56,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskAdded, taskToEdit, onEditComp
   return (
     <Card className="mb-6">
       <CardContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form role="form" onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Input
               type="text"
