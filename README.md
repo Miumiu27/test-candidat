@@ -26,8 +26,8 @@ Une application web moderne de gestion de tâches développée avec React et Exp
 Commencez par cloner le projet sur votre machine locale :
 
 ```bash
-git clone <url-du-repository>
-cd nom-du-projet
+git clone https://github.com/Miumiu27/test-candidat.git
+cd test-candidat
 ```
 
 ### Frontend
