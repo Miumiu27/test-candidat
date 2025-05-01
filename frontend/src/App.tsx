@@ -1,34 +1,50 @@
-import { useState } from 'react';
-import { Button } from './components/ui/button';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-import LoginForm from './components/LoginForm';
-import api from './api/api';
-import { Task } from './types';
+import { useState, useEffect } from "react";
+import { Button } from "./components/ui/button";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+import LoginForm from "./components/LoginForm";
+import api from "./api/api";
+import { Task } from "./types";
 
 const App: React.FC = () => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('accessToken'));
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("accessToken")
+  );
   const [refresh, setRefresh] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
+  useEffect(() => {
+    const checkToken = () => {
+      const currentToken = localStorage.getItem("accessToken");
+      if (!currentToken && token) {
+        setToken(null);
+      }
+    };
+
+    window.addEventListener("storage", checkToken);
+    return () => {
+      window.removeEventListener("storage", checkToken);
+    };
+  }, [token]);
+
   const handleLogin = async (email: string, password: string) => {
     try {
-      const response = await api.post('/api/auth/login', { email, password });
+      const response = await api.post("/api/auth/login", { email, password });
       setToken(response.data.accessToken);
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       setError(null);
     } catch (error) {
-      console.error('Erreur de connexion', error);
-      setError('Identifiants invalides');
+      console.error("Erreur de connexion", error);
+      setError("Identifiants invalides");
     }
   };
 
   const handleLogout = () => {
     setToken(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   };
 
   const handleTaskAdded = () => {

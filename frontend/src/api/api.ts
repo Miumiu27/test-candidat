@@ -1,8 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-
-const API_URL = import.meta.env.VITE_API_URL ;
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
@@ -33,18 +31,22 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
-          // Utiliser l'instance api pour la requête de refresh
           const response = await api.post('/api/auth/refresh', { refreshToken });
           const newAccessToken = response.data.accessToken;
           localStorage.setItem('accessToken', newAccessToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
+          // Supprimer les tokens du localStorage
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          window.location.reload();
           return Promise.reject(refreshError);
         }
+      } else {
+        // Pas de refresh token, supprimer l'accessToken
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        return Promise.reject(error);
       }
     }
     return Promise.reject(error);
