@@ -1,4 +1,4 @@
-// jest.config.cjs
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
@@ -8,7 +8,7 @@ module.exports = {
   },
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: '<rootDir>/tsconfig.test.json' // Utilise tsconfig.test.json
+      tsconfig: '<rootDir>/tsconfig.test.json' 
     }]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
