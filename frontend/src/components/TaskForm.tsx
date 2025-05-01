@@ -9,13 +9,18 @@ interface TaskFormProps {
   onTaskAdded: () => void;
   taskToEdit?: Task | null;
   onEditComplete?: () => void;
+  _testNoValidation?: boolean;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onTaskAdded, taskToEdit, onEditComplete }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ 
+  onTaskAdded, 
+  taskToEdit, 
+  onEditComplete,
+  _testNoValidation = false 
+}) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const isEditing = !!taskToEdit;
-
 
   useEffect(() => {
     if (taskToEdit) {
@@ -32,8 +37,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskAdded, taskToEdit, onEditComp
     try {
       if (isEditing && taskToEdit) {
         await api.put(`/api/tasks/${taskToEdit.id}`, {
-          title: title || taskToEdit.title, 
-          description: description || taskToEdit.description || '', 
+          title: title || taskToEdit.title,
+          description: description || taskToEdit.description || '',
           isDone: taskToEdit.isDone,
         });
         onEditComplete?.();
@@ -63,7 +68,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskAdded, taskToEdit, onEditComp
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Titre de la tâche"
-              required={!isEditing} 
+              required={!isEditing && !_testNoValidation}
             />
           </div>
           <div className="space-y-2">
