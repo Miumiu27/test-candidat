@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Toggle } from './ui/toggle';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit2 } from 'lucide-react';
 import api from '../api/api';
 import { Task } from '../types';
 
 interface TaskListProps {
   refresh: boolean;
+  onEditTask: (task: Task) => void;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ refresh }) => {
+const TaskList: React.FC<TaskListProps> = ({ refresh, onEditTask }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
@@ -71,6 +72,14 @@ const TaskList: React.FC<TaskListProps> = ({ refresh }) => {
                 >
                   {task.isDone ? 'Fait' : 'À faire'}
                 </Toggle>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onEditTask(task)}
+                  aria-label="Modifier la tâche"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
                 <Button
                   variant="destructive"
                   size="icon"
