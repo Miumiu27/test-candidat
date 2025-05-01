@@ -3,7 +3,7 @@ import { Card, CardContent } from './ui/card';
 import { Toggle } from './ui/toggle';
 import { Trash2, Edit2 } from 'lucide-react';
 import { Task } from '../types';
-import { useTasks } from '../hooks/UseTasks';
+import { useTasks } from '../hooks/useTasks';
 interface TaskListProps {
   refresh: boolean;
   onEditTask: (task: Task) => void;
