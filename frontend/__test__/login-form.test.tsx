@@ -12,16 +12,16 @@ describe('LoginForm', () => {
   it('renders login form with email and password inputs', () => {
     render(<LoginForm onLogin={mockOnLogin} error={null} />);
 
-    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Mot de passe')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Entrez votre email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Entrez votre mot de passe')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument();
   });
 
   it('updates email and password inputs when typing', async () => {
     render(<LoginForm onLogin={mockOnLogin} error={null} />);
 
-    const emailInput = screen.getByPlaceholderText('Email');
-    const passwordInput = screen.getByPlaceholderText('Mot de passe');
+    const emailInput = screen.getByPlaceholderText('Entrez votre email');
+    const passwordInput = screen.getByPlaceholderText('Entrez votre mot de passe');
 
     await userEvent.type(emailInput, 'test@example.com');
     await userEvent.type(passwordInput, 'password123');
@@ -33,8 +33,8 @@ describe('LoginForm', () => {
   it('calls onLogin with correct credentials and clears inputs on submit', async () => {
     render(<LoginForm onLogin={mockOnLogin} error={null} />);
 
-    const emailInput = screen.getByPlaceholderText('Email');
-    const passwordInput = screen.getByPlaceholderText('Mot de passe');
+    const emailInput = screen.getByPlaceholderText('Entrez votre email');
+    const passwordInput = screen.getByPlaceholderText('Entrez votre mot de passe');
     const submitButton = screen.getByRole('button', { name: /se connecter/i });
 
     await userEvent.type(emailInput, 'test@example.com');
@@ -61,7 +61,7 @@ describe('LoginForm', () => {
     render(<LoginForm onLogin={mockOnLogin} error={null} />);
 
     const form = screen.getByTestId('login-form');
-    form.onsubmit = handleSubmit; // Associez le gestionnaire d'événements au formulaire
+    form.onsubmit = handleSubmit; 
 
     fireEvent.submit(form);
 
@@ -73,8 +73,8 @@ describe('LoginForm', () => {
   it('has required attributes on inputs', () => {
     render(<LoginForm onLogin={mockOnLogin} error={null} />);
 
-    const emailInput = screen.getByPlaceholderText('Email');
-    const passwordInput = screen.getByPlaceholderText('Mot de passe');
+    const emailInput = screen.getByPlaceholderText('Entrez votre email');
+    const passwordInput = screen.getByPlaceholderText('Entrez votre mot de passe');
 
     expect(emailInput).toHaveAttribute('required');
     expect(passwordInput).toHaveAttribute('required');
