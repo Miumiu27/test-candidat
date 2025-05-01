@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "./components/ui/button";
-
 import LoginForm from "./components/LoginForm";
 import api from "./api/api";
 
@@ -8,6 +7,7 @@ const App: React.FC = () => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("accessToken")
   );
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (email: string, password: string) => {
     try {
@@ -15,9 +15,10 @@ const App: React.FC = () => {
       setToken(response.data.accessToken);
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
+      setError(null); 
     } catch (error) {
       console.error("Erreur de connexion", error);
-      alert("Identifiants invalides");
+      setError("Identifiants invalides");
     }
   };
 
@@ -28,7 +29,7 @@ const App: React.FC = () => {
   };
 
   if (!token) {
-    return <LoginForm onLogin={handleLogin} />;
+    return <LoginForm onLogin={handleLogin} error={error} />;
   }
 
   return (
